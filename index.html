@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khoitapchoigame - Retro Pac-Man</title>
+  <title>Khoitapchoigame - Authentic 1980 Pac-Man</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,8 +12,8 @@
       user-select: none;
     }
     body {
-      background-color: #0b0c10;
-      color: #66fcf1;
+      background-color: #000;
+      color: #fff;
       font-family: 'Courier New', Courier, monospace;
       display: flex;
       flex-direction: column;
@@ -22,107 +22,84 @@
       min-height: 100vh;
       overflow: hidden;
     }
-    .author {
-      font-size: 14px;
-      color: #45a29e;
-      margin-bottom: 4px;
+    .brand {
+      color: #ffb852;
+      font-size: 13px;
       letter-spacing: 2px;
+      margin-bottom: 4px;
       font-weight: bold;
     }
-    .header {
+    .hud {
       display: flex;
       gap: 30px;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
+      margin-bottom: 6px;
+      text-shadow: 0 0 6px #fff;
+    }
+    .status-bar {
+      font-size: 13px;
+      color: #00ffff;
       margin-bottom: 8px;
-      text-shadow: 0 0 8px rgba(102, 252, 241, 0.6);
-    }
-    .difficulty-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .diff-btn {
-      padding: 5px 12px;
-      border: 2px solid #45a29e;
-      background: #1f2833;
-      color: #c5c6c7;
       font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s;
-    }
-    .diff-btn.active {
-      background: #66fcf1;
-      color: #0b0c10;
-      border-color: #66fcf1;
-      box-shadow: 0 0 10px #66fcf1;
     }
     #gameCanvas {
       background-color: #000;
-      border: 4px solid #1f2833;
-      border-radius: 8px;
-      box-shadow: 0 0 20px rgba(69, 162, 158, 0.4);
+      border: 3px solid #2121ff;
+      border-radius: 4px;
+      box-shadow: 0 0 16px rgba(33, 33, 255, 0.6);
       outline: none;
     }
     .controls-hint {
       margin-top: 8px;
-      font-size: 13px;
-      color: #c5c6c7;
+      font-size: 12px;
+      color: #888;
     }
     .dpad {
       display: grid;
-      grid-template-columns: repeat(3, 45px);
-      grid-template-rows: repeat(3, 45px);
-      gap: 5px;
-      margin-top: 10px;
+      grid-template-columns: repeat(3, 42px);
+      grid-template-rows: repeat(3, 42px);
+      gap: 4px;
+      margin-top: 8px;
     }
     .dpad button {
-      background: #1f2833;
-      border: 2px solid #45a29e;
-      color: #66fcf1;
-      font-size: 18px;
-      border-radius: 8px;
+      background: #111;
+      border: 2px solid #2121ff;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
     }
     .dpad button:active {
-      background: #45a29e;
-      color: #000;
+      background: #2121ff;
     }
-    #up { grid-column: 2; grid-row: 1; }
-    #left { grid-column: 1; grid-row: 2; }
-    #down { grid-column: 2; grid-row: 2; }
-    #right { grid-column: 3; grid-row: 2; }
+    #btnUp { grid-column: 2; grid-row: 1; }
+    #btnLeft { grid-column: 1; grid-row: 2; }
+    #btnDown { grid-column: 2; grid-row: 2; }
+    #btnRight { grid-column: 3; grid-row: 2; }
   </style>
 </head>
 <body>
 
-  <div class="author">KHOITAPCHOIGAME PRESENTS</div>
+  <div class="brand">KHOITAPCHOIGAME • NAMCO 1980 ENGINE</div>
 
-  <div class="header">
-    <div>ĐIỂM: <span id="score">0</span></div>
-    <div>CAO NHẤT: <span id="highScore">0</span></div>
+  <div class="hud">
+    <div>1UP: <span id="score">0</span></div>
+    <div>HIGH: <span id="highScore">0</span></div>
+    <div>LIVES: <span id="lives">❤️❤️❤️</span></div>
   </div>
 
-  <div class="difficulty-bar">
-    <button class="diff-btn" onclick="setDiff('easy')">DỄ</button>
-    <button class="diff-btn active" onclick="setDiff('normal')">BÌNH THƯỜNG</button>
-    <button class="diff-btn" onclick="setDiff('hard')">KHÓ</button>
-    <button class="diff-btn" onclick="setDiff('hell')">ĐỊA NGỤC</button>
-  </div>
+  <div class="status-bar" id="gameModeText">CHẾ ĐỘ MA: SCATTER (TẢN VỀ GÓC)</div>
 
   <canvas id="gameCanvas" width="380" height="420" tabindex="1"></canvas>
 
-  <div class="controls-hint">
-    Phím <b>Mũi tên</b> / <b>WASD</b> để lái. Ăn <b>chấm to</b> để săn ma!
-  </div>
+  <div class="controls-hint">Phím Mũi tên hoặc WASD để rẽ. Mê cung chạy chuẩn thuật toán Toru Iwatani.</div>
 
   <div class="dpad">
-    <button id="up">▲</button>
-    <button id="left">◀</button>
-    <button id="down">▼</button>
-    <button id="right">▶</button>
+    <button id="btnUp">▲</button>
+    <button id="btnLeft">◀</button>
+    <button id="btnDown">▼</button>
+    <button id="btnRight">▶</button>
   </div>
 
   <script>
@@ -130,6 +107,8 @@
     const ctx = canvas.getContext('2d');
     const scoreEl = document.getElementById('score');
     const highScoreEl = document.getElementById('highScore');
+    const livesEl = document.getElementById('lives');
+    const modeTextEl = document.getElementById('gameModeText');
 
     canvas.focus();
     window.addEventListener('click', () => canvas.focus());
@@ -138,8 +117,8 @@
     const ROWS = 21;
     const COLS = 19;
 
-    // 1: Tường, 0: Chấm nhỏ (10đ), 3: Chấm hóa thần to (50đ), 2: Trống/Hành lang
-    const initialMap = [
+    // 1: Tường, 0: Chấm thường (10đ), 3: Energizer to (50đ), 2: Hành lang trống, 4: Cửa chuồng ma
+    const originalGrid = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       [1,3,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,3,1],
       [1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1],
@@ -149,7 +128,7 @@
       [1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1],
       [1,1,1,1,0,1,1,1,2,1,2,1,1,1,0,1,1,1,1],
       [2,2,2,1,0,1,2,2,2,2,2,2,2,1,0,1,2,2,2],
-      [1,1,1,1,0,1,2,1,1,2,1,1,2,1,0,1,1,1,1],
+      [1,1,1,1,0,1,2,1,1,4,1,1,2,1,0,1,1,1,1],
       [2,2,2,2,0,2,2,1,2,2,2,1,2,2,0,2,2,2,2],
       [1,1,1,1,0,1,2,1,1,1,1,1,2,1,0,1,1,1,1],
       [2,2,2,1,0,1,2,2,2,2,2,2,2,1,0,1,2,2,2],
@@ -163,19 +142,12 @@
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     ];
 
-    let map = [];
-    let remainingDots = 0;
+    let grid = [];
+    let dotsRemaining = 0;
     let score = 0;
+    let lives = 3;
     let highScore = localStorage.getItem('khoitapchoigame_pacman_hs') || 0;
     highScoreEl.innerText = highScore;
-
-    const diffConfigs = {
-      easy:   { ghostSpeed: 1.0, pacSpeed: 2.2, frightDuration: 10, smartness: 0.15 },
-      normal: { ghostSpeed: 1.5, pacSpeed: 2.0, frightDuration: 7,  smartness: 0.45 },
-      hard:   { ghostSpeed: 1.85, pacSpeed: 2.0, frightDuration: 4, smartness: 0.8 },
-      hell:   { ghostSpeed: 2.2, pacSpeed: 2.0, frightDuration: 2.5, smartness: 1.0 }
-    };
-    let currentDiff = 'normal';
 
     const pacman = {
       x: 9 * TILE + TILE / 2,
@@ -185,198 +157,299 @@
       dirY: 0,
       nextDirX: 0,
       nextDirY: 0,
-      radius: 8,
       mouthAngle: 0.2,
-      mouthSpeed: 0.02
+      mouthDelta: 0.02
     };
 
-    const SPAWN_X = 9 * TILE + TILE / 2;
-    const SPAWN_Y = 10 * TILE + TILE / 2;
-
-    const ghosts = [
-      { id: 1, name: 'Blinky', baseColor: '#ff0033', x: 8 * TILE + TILE / 2, y: 10 * TILE + TILE / 2, dirX: 0, dirY: -1, state: 'normal' },
-      { id: 2, name: 'Pinky',  baseColor: '#ffb8ff', x: 9 * TILE + TILE / 2, y: 10 * TILE + TILE / 2, dirX: 0, dirY: -1, state: 'normal' },
-      { id: 3, name: 'Inky',   baseColor: '#00ffff', x: 10 * TILE + TILE / 2, y: 10 * TILE + TILE / 2, dirX: 0, dirY: -1, state: 'normal' },
-      { id: 4, name: 'Clyde',  baseColor: '#ffb852', x: 9 * TILE + TILE / 2, y: 9 * TILE + TILE / 2, dirX: 0, dirY: -1, state: 'normal' }
+    // Chu kỳ sóng Scatter / Chase gốc cấp độ 1: 7s Scatter, 20s Chase, 7s Scatter, 20s Chase...
+    const waveSchedule = [
+      { mode: 'scatter', duration: 7 * 60 },
+      { mode: 'chase',   duration: 20 * 60 },
+      { mode: 'scatter', duration: 7 * 60 },
+      { mode: 'chase',   duration: 20 * 60 },
+      { mode: 'scatter', duration: 5 * 60 },
+      { mode: 'chase',   duration: 1033 * 60 }
     ];
+    let waveIndex = 0;
+    let waveTimer = waveSchedule[0].duration;
+    let globalMode = 'scatter';
 
     let frightenedTimer = 0;
-    let ghostsEatenCount = 0;
-    let powerPelletBlink = 0;
-    let isGameOver = false;
+    let ghostsEatenInFright = 0;
+    let energizerBlink = 0;
 
-    function initMap() {
-      map = JSON.parse(JSON.stringify(initialMap));
-      remainingDots = 0;
+    // Định nghĩa 4 bóng ma với tọa độ góc Scatter riêng biệt
+    const ghosts = [
+      {
+        id: 'blinky',
+        name: 'Blinky (Shadow)',
+        color: '#ff0000',
+        x: 9 * TILE + TILE / 2,
+        y: 8 * TILE + TILE / 2,
+        dirX: -1, dirY: 0,
+        state: 'normal',
+        scatterCorner: { col: 17, row: -2 } // Góc trên bên phải
+      },
+      {
+        id: 'pinky',
+        name: 'Pinky (Speedy)',
+        color: '#ffb8ff',
+        x: 9 * TILE + TILE / 2,
+        y: 10 * TILE + TILE / 2,
+        dirX: 0, dirY: -1,
+        state: 'normal',
+        scatterCorner: { col: 1, row: -2 } // Góc trên bên trái
+      },
+      {
+        id: 'inky',
+        name: 'Inky (Bashful)',
+        color: '#00ffff',
+        x: 8 * TILE + TILE / 2,
+        y: 10 * TILE + TILE / 2,
+        dirX: 0, dirY: -1,
+        state: 'normal',
+        scatterCorner: { col: 18, row: 22 } // Góc dưới bên phải
+      },
+      {
+        id: 'clyde',
+        name: 'Clyde (Pokey)',
+        color: '#ffb852',
+        x: 10 * TILE + TILE / 2,
+        y: 10 * TILE + TILE / 2,
+        dirX: 0, dirY: -1,
+        state: 'normal',
+        scatterCorner: { col: 0, row: 22 } // Góc dưới bên trái
+      }
+    ];
+
+    const GHOST_HOUSE_EXIT = { x: 9 * TILE + TILE / 2, y: 8 * TILE + TILE / 2 };
+
+    function initGame() {
+      grid = JSON.parse(JSON.stringify(originalGrid));
+      dotsRemaining = 0;
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          if (map[r][c] === 0 || map[r][c] === 3) remainingDots++;
+          if (grid[r][c] === 0 || grid[r][c] === 3) dotsRemaining++;
         }
       }
+      resetPositions();
     }
 
-    function setDiff(level) {
-      currentDiff = level;
-      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      resetGame();
-    }
-
-    function resetGame() {
-      initMap();
-      score = 0;
-      scoreEl.innerText = score;
-      frightenedTimer = 0;
-      isGameOver = false;
-      
+    function resetPositions() {
       pacman.x = 9 * TILE + TILE / 2;
       pacman.y = 16 * TILE + TILE / 2;
       pacman.dirX = 0; pacman.dirY = 0;
       pacman.nextDirX = 0; pacman.nextDirY = 0;
-      pacman.speed = diffConfigs[currentDiff].pacSpeed;
 
-      ghosts.forEach((g, idx) => {
-        g.x = (8 + idx % 3) * TILE + TILE / 2;
-        g.y = (idx === 3 ? 9 : 10) * TILE + TILE / 2;
-        g.dirX = 0;
-        g.dirY = -1;
-        g.state = 'normal';
-      });
-      canvas.focus();
+      ghosts[0].x = 9 * TILE + TILE / 2;  ghosts[0].y = 8 * TILE + TILE / 2;  ghosts[0].dirX = -1; ghosts[0].dirY = 0;
+      ghosts[1].x = 9 * TILE + TILE / 2;  ghosts[1].y = 10 * TILE + TILE / 2; ghosts[1].dirX = 0;  ghosts[1].dirY = -1;
+      ghosts[2].x = 8 * TILE + TILE / 2;  ghosts[2].y = 10 * TILE + TILE / 2; ghosts[2].dirX = 0;  ghosts[2].dirY = -1;
+      ghosts[3].x = 10 * TILE + TILE / 2; ghosts[3].y = 10 * TILE + TILE / 2; ghosts[3].dirX = 0;  ghosts[3].dirY = -1;
+
+      ghosts.forEach(g => g.state = 'normal');
+      frightenedTimer = 0;
+      waveIndex = 0;
+      globalMode = waveSchedule[0].mode;
+      waveTimer = waveSchedule[0].duration;
     }
 
+    // Điều khiển
     window.addEventListener('keydown', (e) => {
-      switch (e.code) {
-        case 'ArrowUp': case 'KeyW': pacman.nextDirX = 0; pacman.nextDirY = -1; e.preventDefault(); break;
-        case 'ArrowDown': case 'KeyS': pacman.nextDirX = 0; pacman.nextDirY = 1; e.preventDefault(); break;
-        case 'ArrowLeft': case 'KeyA': pacman.nextDirX = -1; pacman.nextDirY = 0; e.preventDefault(); break;
-        case 'ArrowRight': case 'KeyD': pacman.nextDirX = 1; pacman.nextDirY = 0; e.preventDefault(); break;
-      }
+      if (['ArrowUp', 'KeyW'].includes(e.code)) { pacman.nextDirX = 0; pacman.nextDirY = -1; e.preventDefault(); }
+      if (['ArrowDown', 'KeyS'].includes(e.code)) { pacman.nextDirX = 0; pacman.nextDirY = 1; e.preventDefault(); }
+      if (['ArrowLeft', 'KeyA'].includes(e.code)) { pacman.nextDirX = -1; pacman.nextDirY = 0; e.preventDefault(); }
+      if (['ArrowRight', 'KeyD'].includes(e.code)) { pacman.nextDirX = 1; pacman.nextDirY = 0; e.preventDefault(); }
     });
 
-    document.getElementById('up').onclick = () => { pacman.nextDirX = 0; pacman.nextDirY = -1; };
-    document.getElementById('down').onclick = () => { pacman.nextDirX = 0; pacman.nextDirY = 1; };
-    document.getElementById('left').onclick = () => { pacman.nextDirX = -1; pacman.nextDirY = 0; };
-    document.getElementById('right').onclick = () => { pacman.nextDirX = 1; pacman.nextDirY = 0; };
+    document.getElementById('btnUp').onclick = () => { pacman.nextDirX = 0; pacman.nextDirY = -1; };
+    document.getElementById('btnDown').onclick = () => { pacman.nextDirX = 0; pacman.nextDirY = 1; };
+    document.getElementById('btnLeft').onclick = () => { pacman.nextDirX = -1; pacman.nextDirY = 0; };
+    document.getElementById('btnRight').onclick = () => { pacman.nextDirX = 1; pacman.nextDirY = 0; };
 
-    function isWall(x, y) {
-      const col = Math.floor(x / TILE);
-      const row = Math.floor(y / TILE);
+    function isWallTile(col, row, isGhost = false, isEyes = false) {
       if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
-      return map[row][col] === 1;
+      const tile = grid[row][col];
+      if (tile === 1) return true;
+      if (tile === 4) return !isGhost || (!isEyes && row === 9); // Cửa nhà ma
+      return false;
     }
 
-    function canMove(x, y, dx, dy, radius = 8) {
-      const checkX = x + dx * (radius + 2);
-      const checkY = y + dy * (radius + 2);
-      return !isWall(checkX, checkY);
+    function canMoveAt(x, y, dx, dy, isGhost = false, isEyes = false) {
+      const targetCol = Math.floor((x + dx * (TILE / 2 + 1)) / TILE);
+      const targetRow = Math.floor((y + dy * (TILE / 2 + 1)) / TILE);
+      return !isWallTile(targetCol, targetRow, isGhost, isEyes);
     }
 
-    function chooseGhostDir(g) {
-      const dirs = [
-        { x: 0, y: -1 }, { x: -1, y: 0 },
-        { x: 0, y: 1 },  { x: 1, y: 0 }
-      ];
-      // Loại bỏ hướng quay đầu 180 độ ngay lập tức để không bị giật cục
-      const valid = dirs.filter(d => {
-        if (d.x === -g.dirX && d.y === -g.dirY) return false;
-        return canMove(g.x, g.y, d.x, d.y, 7);
-      });
-      const candidates = valid.length > 0 ? valid : dirs.filter(d => canMove(g.x, g.y, d.x, d.y, 7));
-      if (candidates.length === 0) return;
+    /* Thuật toán tính ô Target Tile theo đúng mã nguồn Z80 của cha đẻ Toru Iwatani */
+    function getGhostTarget(g) {
+      const pCol = Math.floor(pacman.x / TILE);
+      const pRow = Math.floor(pacman.y / TILE);
 
-      // Trạng thái bị ăn: Chỉ còn mắt, tìm đường ngắn nhất quay về ô hồi sinh
+      // 1. Mắt chết: Luôn tìm đường bay về cửa chuồng ma
       if (g.state === 'dead') {
-        candidates.sort((a, b) => {
-          const d1 = Math.hypot((g.x + a.x * TILE) - SPAWN_X, (g.y + a.y * TILE) - SPAWN_Y);
-          const d2 = Math.hypot((g.x + b.x * TILE) - SPAWN_X, (g.y + b.y * TILE) - SPAWN_Y);
-          return d1 - d2;
-        });
-        g.dirX = candidates[0].x;
-        g.dirY = candidates[0].y;
-        return;
+        return { col: 9, row: 9 };
       }
 
-      // Trạng thái sợ hãi: Chạy theo hướng xa Pacman nhất
-      if (g.state === 'frightened') {
-        candidates.sort((a, b) => {
-          const d1 = Math.hypot((g.x + a.x * TILE) - pacman.x, (g.y + a.y * TILE) - pacman.y);
-          const d2 = Math.hypot((g.x + b.x * TILE) - pacman.x, (g.y + b.y * TILE) - pacman.y);
-          return d2 - d1;
-        });
-        g.dirX = candidates[0].x;
-        g.dirY = candidates[0].y;
-        return;
+      // 2. Chế độ Scatter: Mỗi con giữ 1 góc lãnh địa
+      if (globalMode === 'scatter' || g.state === 'frightened') {
+        return g.scatterCorner;
       }
 
-      // Trạng thái săn đuổi theo AI độ khó
-      const cfg = diffConfigs[currentDiff];
-      if (Math.random() < cfg.smartness) {
-        // AI thông minh: Điểm đích mục tiêu
-        let targetX = pacman.x;
-        let targetY = pacman.y;
+      // 3. Chế độ Chase: AI đặc trưng của từng con
+      switch (g.id) {
+        case 'blinky':
+          // Blinky: Nhắm trực diện vào tọa độ của Pacman
+          return { col: pCol, row: pRow };
 
-        // Chế độ Địa ngục / Khó: Pinky và Inky tìm cách chặn đầu
-        if ((currentDiff === 'hard' || currentDiff === 'hell') && (g.id === 2 || g.id === 3)) {
-          targetX += pacman.dirX * TILE * 3;
-          targetY += pacman.dirY * TILE * 3;
+        case 'pinky':
+          // Pinky: Phục kích 4 ô phía trước Pacman (+ Bug gốc overflow khi Pacman hướng lên trên)
+          let targetCol = pCol + pacman.dirX * 4;
+          let targetRow = pRow + pacman.dirY * 4;
+          if (pacman.dirY === -1) {
+            targetCol -= 4; // Tái hiện chuẩn bug Z80 gốc của Namco khi Pac-Man hướng lên
+          }
+          return { col: targetCol, row: targetRow };
+
+        case 'inky': {
+          // Inky: Lấy điểm 2 ô trước Pacman, dựng vector nhân đôi từ vị trí Blinky
+          const bCol = Math.floor(ghosts[0].x / TILE);
+          const bRow = Math.floor(ghosts[0].y / TILE);
+          let midCol = pCol + pacman.dirX * 2;
+          let midRow = pRow + pacman.dirY * 2;
+          if (pacman.dirY === -1) midCol -= 2;
+
+          const vecCol = midCol - bCol;
+          const vecRow = midRow - bRow;
+          return { col: bCol + vecCol * 2, row: bRow + vecRow * 2 };
         }
 
-        candidates.sort((a, b) => {
-          const d1 = Math.hypot((g.x + a.x * TILE) - targetX, (g.y + a.y * TILE) - targetY);
-          const d2 = Math.hypot((g.x + b.x * TILE) - targetX, (g.y + b.y * TILE) - targetY);
-          return d1 - d2;
-        });
-        g.dirX = candidates[0].x;
-        g.dirY = candidates[0].y;
-      } else {
-        // Đi ngẫu nhiên
-        const rand = candidates[Math.floor(Math.random() * candidates.length)];
-        g.dirX = rand.x;
-        g.dirY = rand.y;
+        case 'clyde': {
+          // Clyde: Nếu cách xa hơn 8 ô -> Dí như Blinky; Nếu dưới 8 ô -> Sợ hãi chạy về góc của mình
+          const gCol = Math.floor(g.x / TILE);
+          const gRow = Math.floor(g.y / TILE);
+          const dist = Math.hypot(gCol - pCol, gRow - pRow);
+          return dist > 8 ? { col: pCol, row: pRow } : g.scatterCorner;
+        }
       }
+      return { col: pCol, row: pRow };
+    }
+
+    /* Thuật toán tìm đường ngã ba: Thứ tự ưu tiên UP > LEFT > DOWN > RIGHT, khoảng cách chim bay */
+    function updateGhostDirection(g) {
+      // Thứ tự ưu tiên rẽ truyền thống trong ROM Pac-Man
+      const directions = [
+        { x: 0, y: -1 }, // UP
+        { x: -1, y: 0 }, // LEFT
+        { x: 0, y: 1 },  // DOWN
+        { x: 1, y: 0 }   // RIGHT
+      ];
+
+      // Luật bất thành văn: Không bao giờ được quay ngược 180 độ
+      const allowed = directions.filter(d => {
+        if (d.x === -g.dirX && d.y === -g.dirY) return false;
+        return canMoveAt(g.x, g.y, d.x, d.y, true, g.state === 'dead');
+      });
+
+      if (allowed.length === 0) return;
+
+      // Khi bị Frightened: Di chuyển theo thuật toán sinh số giả ngẫu nhiên (Pseudo-random)
+      if (g.state === 'frightened') {
+        const pick = allowed[Math.floor(Math.random() * allowed.length)];
+        g.dirX = pick.x;
+        g.dirY = pick.y;
+        return;
+      }
+
+      const target = getGhostTarget(g);
+
+      // Sắp xếp các hướng theo khoảng cách Euclidean ngắn nhất tới Target Tile
+      allowed.sort((a, b) => {
+        const nextColA = Math.floor((g.x + a.x * TILE) / TILE);
+        const nextRowA = Math.floor((g.y + a.y * TILE) / TILE);
+        const distA = Math.pow(nextColA - target.col, 2) + Math.pow(nextRowA - target.row, 2);
+
+        const nextColB = Math.floor((g.x + b.x * TILE) / TILE);
+        const nextRowB = Math.floor((g.y + b.y * TILE) / TILE);
+        const distB = Math.pow(nextColB - target.col, 2) + Math.pow(nextRowB - target.row, 2);
+
+        return distA - distB;
+      });
+
+      g.dirX = allowed[0].x;
+      g.dirY = allowed[0].y;
     }
 
     function triggerFrightened() {
-      const cfg = diffConfigs[currentDiff];
-      frightenedTimer = cfg.frightDuration * 60;
-      ghostsEatenCount = 0;
+      frightenedTimer = 6 * 60; // 6 giây
+      ghostsEatenInFright = 0;
       ghosts.forEach(g => {
         if (g.state !== 'dead') {
           g.state = 'frightened';
-          // Đảo chiều chạy ngay khi sợ hãi
+          // Quay đầu 180 độ khi bắt đầu hoảng sợ
           g.dirX = -g.dirX;
           g.dirY = -g.dirY;
         }
       });
     }
 
-    function update() {
-      if (isGameOver) return;
+    function updateWaveTimer() {
+      if (frightenedTimer > 0) {
+        frightenedTimer--;
+        modeTextEl.innerText = "CHẾ ĐỘ MA: FRIGHTENED (HOẢNG SỢ - MA YẾU)";
+        modeTextEl.style.color = "#0000ff";
+        if (frightenedTimer === 0) {
+          ghosts.forEach(g => { if (g.state === 'frightened') g.state = 'normal'; });
+        }
+        return;
+      }
 
-      // Pacman chuyển hướng
-      if (canMove(pacman.x, pacman.y, pacman.nextDirX, pacman.nextDirY)) {
+      waveTimer--;
+      if (waveTimer <= 0) {
+        waveIndex = Math.min(waveIndex + 1, waveSchedule.length - 1);
+        globalMode = waveSchedule[waveIndex].mode;
+        waveTimer = waveSchedule[waveIndex].duration;
+
+        // Khi đổi sóng giữa Scatter và Chase, toàn bộ ma quay đầu 180 độ
+        ghosts.forEach(g => {
+          if (g.state === 'normal') {
+            g.dirX = -g.dirX;
+            g.dirY = -g.dirY;
+          }
+        });
+      }
+
+      modeTextEl.innerText = globalMode === 'chase' 
+        ? "CHẾ ĐỘ MA: CHASE (4 MA ĐỒNG LOẠT VÂY RÁP)" 
+        : "CHẾ ĐỘ MA: SCATTER (TẢN RA 4 GÓC NGHỈ NGƠI)";
+      modeTextEl.style.color = globalMode === 'chase' ? "#ff0033" : "#00ffcc";
+    }
+
+    function update() {
+      updateWaveTimer();
+
+      // Di chuyển Pac-man
+      if (canMoveAt(pacman.x, pacman.y, pacman.nextDirX, pacman.nextDirY)) {
         pacman.dirX = pacman.nextDirX;
         pacman.dirY = pacman.nextDirY;
       }
-      if (canMove(pacman.x, pacman.y, pacman.dirX, pacman.dirY)) {
+      if (canMoveAt(pacman.x, pacman.y, pacman.dirX, pacman.dirY)) {
         pacman.x += pacman.dirX * pacman.speed;
         pacman.y += pacman.dirY * pacman.speed;
       }
 
-      // Xuyên hầm
+      // Hầm dịch chuyển hai bên (Warp Tunnel)
       if (pacman.x < 0) pacman.x = canvas.width;
       if (pacman.x > canvas.width) pacman.x = 0;
 
       // Ăn điểm
       const curCol = Math.floor(pacman.x / TILE);
       const curRow = Math.floor(pacman.y / TILE);
-      if (map[curRow] && (map[curRow][curCol] === 0 || map[curRow][curCol] === 3)) {
-        const isSuper = map[curRow][curCol] === 3;
-        map[curRow][curCol] = 2;
-        remainingDots--;
-        score += isSuper ? 50 : 10;
-        if (isSuper) triggerFrightened();
+      if (grid[curRow] && (grid[curRow][curCol] === 0 || grid[curRow][curCol] === 3)) {
+        const isEnergizer = grid[curRow][curCol] === 3;
+        grid[curRow][curCol] = 2;
+        dotsRemaining--;
+        score += isEnergizer ? 50 : 10;
+        if (isEnergizer) triggerFrightened();
 
         scoreEl.innerText = score;
         if (score > highScore) {
@@ -385,49 +458,35 @@
           localStorage.setItem('khoitapchoigame_pacman_hs', highScore);
         }
 
-        // Điều kiện Thắng
-        if (remainingDots <= 0) {
-          isGameOver = true;
-          setTimeout(() => {
-            alert('🎉 CHIẾN THẮNG TUYỆT ĐỐI! Bạn đã dọn sạch toàn bộ mê cung!\nĐiểm số: ' + score);
-            resetGame();
-          }, 100);
+        // Thắng màn
+        if (dotsRemaining <= 0) {
+          alert('🏆 CHIẾN THẮNG TUYỆT VỜI! BẠN ĐÃ DỌN SẠCH MÊ CUNG!\nTổng điểm: ' + score);
+          initGame();
           return;
         }
       }
 
-      // Đếm ngược sợ hãi
-      if (frightenedTimer > 0) {
-        frightenedTimer--;
-        if (frightenedTimer === 0) {
-          ghosts.forEach(g => {
-            if (g.state === 'frightened') g.state = 'normal';
-          });
-        }
-      }
+      // Hoạt ảnh
+      pacman.mouthAngle += pacman.mouthDelta;
+      if (pacman.mouthAngle > 0.35 || pacman.mouthAngle < 0.05) pacman.mouthDelta = -pacman.mouthDelta;
+      energizerBlink += 0.08;
 
-      // Hiệu ứng miệng
-      pacman.mouthAngle += pacman.mouthSpeed;
-      if (pacman.mouthAngle > 0.35 || pacman.mouthAngle < 0.05) pacman.mouthSpeed = -pacman.mouthSpeed;
-      powerPelletBlink += 0.08;
-
-      // Cập nhật ma
-      const cfg = diffConfigs[currentDiff];
+      // Di chuyển ma
       ghosts.forEach(g => {
-        let speed = cfg.ghostSpeed;
-        if (g.state === 'frightened') speed *= 0.65;
-        if (g.state === 'dead') speed = 3.2; // Mắt bay về chuồng cực nhanh
+        let spd = 1.6;
+        if (g.state === 'frightened') spd = 1.0;
+        if (g.state === 'dead') spd = 3.2; // Đôi mắt bay nhanh về nhà
 
-        chooseGhostDir(g);
-        g.x += g.dirX * speed;
-        g.y += g.dirY * speed;
+        updateGhostDirection(g);
+        g.x += g.dirX * spd;
+        g.y += g.dirY * spd;
 
         if (g.x < 0) g.x = canvas.width;
         if (g.x > canvas.width) g.x = 0;
 
-        // Khi mắt về đến ô hồi sinh -> Hồi sinh lại ma bình thường
+        // Ma chết về lại giữa nhà sẽ hồi sinh
         if (g.state === 'dead') {
-          if (Math.hypot(g.x - SPAWN_X, g.y - SPAWN_Y) < 10) {
+          if (Math.hypot(g.x - GHOST_HOUSE_EXIT.x, g.y - (10 * TILE)) < 8) {
             g.state = 'normal';
             g.dirX = 0;
             g.dirY = -1;
@@ -436,21 +495,28 @@
 
         // Xử lý va chạm
         const dist = Math.hypot(pacman.x - g.x, pacman.y - g.y);
-        if (dist < pacman.radius * 1.5) {
+        if (dist < 12) {
           if (g.state === 'frightened') {
-            // Pacman nuốt ma
+            // Ăn ma: 200, 400, 800, 1600 chuẩn game thùng
             g.state = 'dead';
-            ghostsEatenCount++;
-            const bonus = 200 * Math.pow(2, ghostsEatenCount - 1);
-            score += bonus;
+            ghostsEatenInFright++;
+            const pts = 200 * Math.pow(2, ghostsEatenInFright - 1);
+            score += pts;
             scoreEl.innerText = score;
           } else if (g.state === 'normal') {
-            // Chạm ma bình thường -> Thua
-            isGameOver = true;
-            setTimeout(() => {
-              alert('💀 BẠN ĐÃ BỊ MA BẮT! THUA CUỘC!\nĐiểm số đạt được: ' + score);
-              resetGame();
-            }, 100);
+            // Bị ma bắt: Mất mạng
+            lives--;
+            livesEl.innerText = "❤️".repeat(lives);
+            if (lives <= 0) {
+              alert('💀 GAME OVER! Bạn đã hết mạng.\nĐiểm số đạt được: ' + score);
+              lives = 3;
+              livesEl.innerText = "❤️❤️❤️";
+              score = 0;
+              scoreEl.innerText = 0;
+              initGame();
+            } else {
+              resetPositions();
+            }
           }
         }
       });
@@ -459,57 +525,54 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Vẽ bản đồ
+      // Vẽ Mê cung
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          if (map[r][c] === 1) {
-            ctx.fillStyle = '#1e3d59';
+          const t = grid[r][c];
+          if (t === 1) {
+            ctx.fillStyle = '#0a0a80';
             ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
-            ctx.strokeStyle = '#17252a';
+            ctx.strokeStyle = '#2121ff';
             ctx.strokeRect(c * TILE, r * TILE, TILE, TILE);
-          } else if (map[r][c] === 0) {
+          } else if (t === 4) {
+            ctx.fillStyle = '#ffb8ff';
+            ctx.fillRect(c * TILE, r * TILE + 8, TILE, 4);
+          } else if (t === 0) {
             ctx.beginPath();
             ctx.arc(c * TILE + TILE / 2, r * TILE + TILE / 2, 2.5, 0, Math.PI * 2);
-            ctx.fillStyle = '#f5f0e1';
+            ctx.fillStyle = '#ffb8ae';
             ctx.fill();
-          } else if (map[r][c] === 3) {
-            // Cục năng lượng to nhấp nháy
-            const rad = 5 + Math.sin(powerPelletBlink) * 1.8;
+          } else if (t === 3) {
+            const rad = 5 + Math.sin(energizerBlink) * 2;
             ctx.beginPath();
             ctx.arc(c * TILE + TILE / 2, r * TILE + TILE / 2, rad, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffcc00';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = '#ffcc00';
+            ctx.fillStyle = '#ffb8ae';
             ctx.fill();
-            ctx.shadowBlur = 0;
           }
         }
       }
 
       // Vẽ Pacman
       ctx.beginPath();
-      let baseAngle = 0;
-      if (pacman.dirX === 1) baseAngle = 0;
-      if (pacman.dirX === -1) baseAngle = Math.PI;
-      if (pacman.dirY === 1) baseAngle = Math.PI / 2;
-      if (pacman.dirY === -1) baseAngle = -Math.PI / 2;
+      let angle = 0;
+      if (pacman.dirX === 1) angle = 0;
+      if (pacman.dirX === -1) angle = Math.PI;
+      if (pacman.dirY === 1) angle = Math.PI / 2;
+      if (pacman.dirY === -1) angle = -Math.PI / 2;
 
       ctx.arc(
-        pacman.x, pacman.y, pacman.radius,
-        baseAngle + pacman.mouthAngle * Math.PI,
-        baseAngle + (2 - pacman.mouthAngle) * Math.PI
+        pacman.x, pacman.y, 8,
+        angle + pacman.mouthAngle * Math.PI,
+        angle + (2 - pacman.mouthAngle) * Math.PI
       );
       ctx.lineTo(pacman.x, pacman.y);
-      ctx.fillStyle = '#ffeb3b';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = '#ffeb3b';
+      ctx.fillStyle = '#ffff00';
       ctx.fill();
-      ctx.shadowBlur = 0;
 
-      // Vẽ Ma
+      // Vẽ 4 Ma
       ghosts.forEach(g => {
         if (g.state === 'dead') {
-          // Chỉ vẽ đôi mắt chạy trốn
+          // Vẽ đôi mắt trắng con ngươi xanh bay về chuồng
           ctx.beginPath();
           ctx.arc(g.x - 3, g.y - 1, 3, 0, Math.PI * 2);
           ctx.arc(g.x + 3, g.y - 1, 3, 0, Math.PI * 2);
@@ -518,26 +581,25 @@
           ctx.beginPath();
           ctx.arc(g.x - 3 + g.dirX, g.y - 1 + g.dirY, 1.5, 0, Math.PI * 2);
           ctx.arc(g.x + 3 + g.dirX, g.y - 1 + g.dirY, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = '#0000ff';
+          ctx.fillStyle = '#2121ff';
           ctx.fill();
           return;
         }
 
         ctx.beginPath();
-        ctx.arc(g.x, g.y - 2, pacman.radius, Math.PI, 0, false);
-        ctx.lineTo(g.x + pacman.radius, g.y + pacman.radius);
-        ctx.lineTo(g.x + pacman.radius / 2, g.y + pacman.radius - 3);
-        ctx.lineTo(g.x, g.y + pacman.radius);
-        ctx.lineTo(g.x - pacman.radius / 2, g.y + pacman.radius - 3);
-        ctx.lineTo(g.x - pacman.radius, g.y + pacman.radius);
+        ctx.arc(g.x, g.y - 2, 8, Math.PI, 0, false);
+        ctx.lineTo(g.x + 8, g.y + 8);
+        ctx.lineTo(g.x + 4, g.y + 5);
+        ctx.lineTo(g.x, g.y + 8);
+        ctx.lineTo(g.x - 4, g.y + 5);
+        ctx.lineTo(g.x - 8, g.y + 8);
         ctx.closePath();
 
         if (g.state === 'frightened') {
-          // Nhấp nháy trắng xanh khi gần hết giờ
           const isFlashing = frightenedTimer < 120 && Math.floor(frightenedTimer / 10) % 2 === 0;
-          ctx.fillStyle = isFlashing ? '#ffffff' : '#1e30f3';
+          ctx.fillStyle = isFlashing ? '#ffffff' : '#2121ff';
         } else {
-          ctx.fillStyle = g.baseColor;
+          ctx.fillStyle = g.color;
         }
         ctx.fill();
 
@@ -545,25 +607,24 @@
         ctx.beginPath();
         ctx.arc(g.x - 3, g.y - 3, 2.5, 0, Math.PI * 2);
         ctx.arc(g.x + 3, g.y - 3, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = (g.state === 'frightened') ? '#ffb8ae' : '#fff';
         ctx.fill();
         ctx.beginPath();
-        const eyePupil = (g.state === 'frightened') ? '#ff8000' : '#000';
         ctx.arc(g.x - 3 + g.dirX, g.y - 3 + g.dirY, 1.2, 0, Math.PI * 2);
         ctx.arc(g.x + 3 + g.dirX, g.y - 3 + g.dirY, 1.2, 0, Math.PI * 2);
-        ctx.fillStyle = eyePupil;
+        ctx.fillStyle = (g.state === 'frightened') ? '#ff0000' : '#000';
         ctx.fill();
       });
     }
 
-    function gameLoop() {
+    function loop() {
       update();
       draw();
-      requestAnimationFrame(gameLoop);
+      requestAnimationFrame(loop);
     }
 
-    resetGame();
-    gameLoop();
+    initGame();
+    loop();
   </script>
 </body>
 </html>
